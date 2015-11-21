@@ -13,9 +13,11 @@ var canvas;
 var context;
 var lines;
 var timer;
+var lineIndex;
+var numLines;
 
-
-function makeLines(){
+function makeLine(){
+	context.clearRect(0, 0, 700, 700)
 	context.globalCompositeOperation = 'source-over';
 var p1 = 0;
 var p2 = 0;
@@ -24,14 +26,18 @@ var p4 = 700;
 
 for (i=0; i<10; i++){
  
-context.beginPath();
-context.moveTo(p1, p2);
-context.lineTo(p3, p4);
-context.strokeStyle = "black";
-context.stroke();
+	context.beginPath();
+	context.moveTo(p1, p2);
+	context.lineTo(p3, p4);
+	if (i % 2 == 0) {
+            context.strokeStyle = "darkred";
+        } else {
+            context.strokeStyle = "green";
+        }
+        context.stroke();
 
-p2 += 70;
-p3 += 70;
+	p2 += 70;
+	p3 += 70;
 
 }
 
@@ -42,14 +48,18 @@ var p8 = 700;
 
 for (i=0; i<10; i++){
  
-context.beginPath();
-context.moveTo(p5, p6);
-context.lineTo(p7, p8);
-context.strokeStyle = "black";
-context.stroke();
+	context.beginPath();
+	context.moveTo(p5, p6);
+	context.lineTo(p7, p8);
+	if (i % 2 == 0) {
+            context.strokeStyle = "purple";
+        } else {
+            context.strokeStyle = "teal";
+        }
+	context.stroke();
 
-p5 -= 70;
-p8 -= 70;
+	p5 -= 70;
+	p8 -= 70;
 
 }
 
@@ -58,8 +68,8 @@ p8 -= 70;
 window.onload = function() {
 	canvas = document.getElementById('canvas');
 	context = canvas.getContext('2d');
-	makeLines();
-	timer = setInterval(makeLines, 100);
+	makeLine();
+	timer = setInterval(makeLine, 100);
 }
 
 
