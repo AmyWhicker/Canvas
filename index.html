@@ -1,81 +1,90 @@
 <!doctype html>
-<html lang='en'>
+<html>
 <head>
-<title>Line Work</title>
-<meta charset = 'utf-8'>
-<style>
-canvas {
-	background-color:powderblue;
-}
-</style>
+<title>Responsive Interactive Canvas</title>
 <script>
-var canvas;
-var context;
-var lines;
-var timer;
-var lineIndex;
-var numLines;
+	  var canvas;
+	  var context;
+	  var circles = [];
+	  function Circle(x, y, color, radius) { 
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.radius = radius;
 
-function makeLine(){
-	context.clearRect(0, 0, 700, 700)
-	context.globalCompositeOperation = 'source-over';
-var p1 = 0;
-var p2 = 0;
-var p3 = 10;
-var p4 = 700;
+this.dx = Math.floor(Math.random()*4-2);
+this.dy = Math.floor(Math.random()*4-2);
 
-for (i=0; i<10; i++){
- 
-	context.beginPath();
-	context.moveTo(p1, p2);
-	context.lineTo(p3, p4);
-	if (i % 2 == 0) {
-            context.strokeStyle = "darkred";
-        } else {
-            context.strokeStyle = "green";
-        }
-        context.stroke();
+	  }
+      function init() {
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext("2d");
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
+		canvas.onclick = function(event) {
+			handleClick(event.clientX, event.clientY);
+		};
+var timer = setInterval(resizeCanvas, 30);
+      }
+	  function handleClick(x, y) {
+	     var found = false;
+		 for (var i=0; i<circles.length; i++) {
+			d = Math.sqrt((circles[i].x - x)*(circles[i].x - x) + (circles[i].y - y)*(circles[i].y - y));
+			//if (d <= 10) {
+				//circles.splice(i, 1);
+				//found = true;
+			//}
+		 }
+		 fillBackgroundColor();
+		 if (!found) {
+			var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
+			var color = colors[Math.floor(Math.random()*colors.length)];
+			var radius = Math.floor(Math.random()*80);
+			circles.push(new Circle(x, y, color, radius));
+		}
+		for (var i=0; i<circles.length; i++) {
+			drawCircle(circles[i]);
+		}
+	  }
+	  function drawCircle(circle) {
 
-	p2 += 70;
-	p3 += 70;
+		 context.beginPath();
+		 context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		context.globalCompositeOperation = "exclusion";
+		 context.fill();
+		 
+if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
+circle.dx = -circle.dx;
+if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0)
+circle.dy = -circle.dy;
+circle.x += circle.dx;
+circle.y += circle.dy;
 
-}
-
-var p5 = 690;
-var p6 = 0;
-var p7 = 700;
-var p8 = 700;
-
-for (i=0; i<10; i++){
- 
-	context.beginPath();
-	context.moveTo(p5, p6);
-	context.lineTo(p7, p8);
-	if (i % 2 == 0) {
-            context.strokeStyle = "purple";
-        } else {
-            context.strokeStyle = "teal";
-        }
-	context.stroke();
-
-	p5 -= 70;
-	p8 -= 70;
-
-}
-
-}
-
-window.onload = function() {
-	canvas = document.getElementById('canvas');
-	context = canvas.getContext('2d');
-	makeLine();
-	timer = setInterval(makeLine, 100);
-}
-
-
+	  }
+      function resizeCanvas() {
+        canvas.width = window.innerWidth - 20;
+        canvas.height = window.innerHeight - 20;
+		fillBackgroundColor();
+		for (var i=0; i<circles.length; i++) {
+			drawCircle(circles[i]);
+		 }
+      }
+	  function fillBackgroundColor() {
+		 //var colors = ["white", "yellow", "blue", "red"];
+		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
+		 context.fillStyle = 'pink';
+		 context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	function degreesToRadians(degrees) {
+		//converts from degrees to radians and returns
+		return (degrees * Math.PI)/180;
+	}
+	
+	window.onload = init;
 </script>
 </head>
 <body>
-	<canvas id = 'canvas' width = '700' height = '700'></canvas>
-</body>
-</html> 
+<canvas id='canvas' width=500 height=500></canvas>
+</body>	  
