@@ -5,16 +5,15 @@
 <script>
 	  var canvas;
 	  var context;
+	  var timer = setInterval(resizeCanvas, 30);
 	  var circles = [];
 	  function Circle(x, y, color, radius) { 
 		this.x = x;
 		this.y = y;
 		this.color = color;
 		this.radius = radius;
-
-this.dx = Math.floor(Math.random()*4-2);
-this.dy = Math.floor(Math.random()*4-2);
-
+		this.dx = Math.floor(Math.random()*4-2); //x velocity
+		this.dy = Math.floor(Math.random()*4-2); //y velocity
 	  }
       function init() {
         canvas = document.getElementById('canvas');
@@ -25,7 +24,6 @@ this.dy = Math.floor(Math.random()*4-2);
 		canvas.onclick = function(event) {
 			handleClick(event.clientX, event.clientY);
 		};
-var timer = setInterval(resizeCanvas, 30);
       }
 	  function handleClick(x, y) {
 	     var found = false;
@@ -36,7 +34,7 @@ var timer = setInterval(resizeCanvas, 30);
 				//found = true;
 			//}
 		 }
-		 fillBackgroundColor();
+		 //fillBackgroundColor();
 		 if (!found) {
 			var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
 			var color = colors[Math.floor(Math.random()*colors.length)];
@@ -52,16 +50,15 @@ var timer = setInterval(resizeCanvas, 30);
 		 context.beginPath();
 		 context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
 		 context.fillStyle = circle.color;
-		context.globalCompositeOperation = "exclusion";
+		context.globalCompositeOperation = "lighter";
 		 context.fill();
 		 
-if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
-circle.dx = -circle.dx;
-if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0)
-circle.dy = -circle.dy;
-circle.x += circle.dx;
-circle.y += circle.dy;
-
+		if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
+			{circle.dx = -circle.dx;}
+		if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0)
+			{circle.dy = -circle.dy;}
+			circle.x += circle.dx;
+			circle.y += circle.dy;
 	  }
       function resizeCanvas() {
         canvas.width = window.innerWidth - 20;
@@ -74,7 +71,7 @@ circle.y += circle.dy;
 	  function fillBackgroundColor() {
 		 //var colors = ["white", "yellow", "blue", "red"];
 		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
-		 context.fillStyle = 'pink';
+		 context.fillStyle = 'black';
 		 context.fillRect(0, 0, canvas.width, canvas.height);
 	}
 	function degreesToRadians(degrees) {
