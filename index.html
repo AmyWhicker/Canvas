@@ -7,79 +7,131 @@
 	  var context;
 	  var timer = setInterval(resizeCanvas, 30);
 	  var circles = [];
-	  function Circle(x, y, color, radius) { 
-		this.x = x;
-		this.y = y;
-		this.color = color;
-		this.radius = radius;
-		this.dx = Math.floor(Math.random()*4-2); //x velocity
-		this.dy = Math.floor(Math.random()*4-2); //y velocity
+	  var squares = [];
+
+	  function Circle(x, y, color, radius) {
+	  	this.x = x;
+	  	this.y = y;
+	  	this.color = color;
+	  	this.radius = radius;
+	  	this.dx = Math.floor(Math.random() * 4 - 2); //x velocity
+	  	this.dy = Math.floor(Math.random() * 4 - 2); //y velocity
 	  }
-      function init() {
-        canvas = document.getElementById('canvas');
-        context = canvas.getContext("2d");
-        window.addEventListener('resize', resizeCanvas, false);
-        window.addEventListener('orientationchange', resizeCanvas, false);
-        resizeCanvas();
-		canvas.onclick = function(event) {
-			handleClick(event.clientX, event.clientY);
-		};
-      }
-	  function handleClick(x, y) {
-	     var found = false;
-		 for (var i=0; i<circles.length; i++) {
-			d = Math.sqrt((circles[i].x - x)*(circles[i].x - x) + (circles[i].y - y)*(circles[i].y - y));
-			//if (d <= 10) {
-				//circles.splice(i, 1);
-				//found = true;
-			//}
-		 }
-		 //fillBackgroundColor();
-		 if (!found) {
-			var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
-			var color = colors[Math.floor(Math.random()*colors.length)];
-			var radius = Math.floor(Math.random()*80);
-			circles.push(new Circle(x, y, color, radius));
-		}
-		for (var i=0; i<circles.length; i++) {
-			drawCircle(circles[i]);
-		}
+
+	  function Square(x, y, color, size) {
+	  	this.x = x;
+	  	this.y = y;
+	  	this.color = color;
+	  	this.size = size;
+	  	this.dx = Math.floor(Math.random() * 4 - 2);
+	  	this.dy = Math.floor(Math.random() * 4 - 2);
 	  }
+
+	  function init() {
+	  	canvas = document.getElementById('canvas');
+	  	context = canvas.getContext("2d");
+	  	//window.addEventListener('resize', resizeCanvas, false);
+	  	//window.addEventListener('orientationchange', resizeCanvas, false);
+	  	//resizeCanvas();
+	  	canvas.onclick = function(event) {
+	  		handleClick(event.clientX, event.clientY); // add listener for right click
+	  	};
+	  }
+	  /*
+	  	  function handleClick(x, y) {
+	  	     var found = false;
+	  		 if (!found) {
+	  			var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
+	  			var color = colors[Math.floor(Math.random()*colors.length)];
+	  			var radius = Math.floor(Math.random()*80);
+	  			circles.push(new Circle(x, y, color, radius));
+	  		}
+	  		for (var i=0; i<circles.length; i++) {
+	  			drawCircle(circles[i]);
+	  		}
+	  	  }
+	  */
 	  function drawCircle(circle) {
 
-		 context.beginPath();
-		 context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
-		 context.fillStyle = circle.color;
-		context.globalCompositeOperation = "lighter";
-		 context.fill();
-		 
-		if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
-			{circle.dx = -circle.dx;}
-		if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0)
-			{circle.dy = -circle.dy;}
-			circle.x += circle.dx;
-			circle.y += circle.dy;
+	  	context.beginPath();
+	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
+	  	context.fillStyle = circle.color;
+	  	context.globalCompositeOperation = "lighter";
+	  	context.fill();
+
+	  	if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0) {
+	  		circle.dx = -circle.dx;
+	  	}
+	  	if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0) {
+	  		circle.dy = -circle.dy;
+	  	}
+	  	circle.x += circle.dx;
+	  	circle.y += circle.dy;
 	  }
-      function resizeCanvas() {
-        canvas.width = window.innerWidth - 20;
-        canvas.height = window.innerHeight - 20;
-		fillBackgroundColor();
-		for (var i=0; i<circles.length; i++) {
-			drawCircle(circles[i]);
-		 }
-      }
-	  function fillBackgroundColor() {
-		 //var colors = ["white", "yellow", "blue", "red"];
-		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
-		 context.fillStyle = 'black';
-		 context.fillRect(0, 0, canvas.width, canvas.height);
-	}
-	function degreesToRadians(degrees) {
-		//converts from degrees to radians and returns
-		return (degrees * Math.PI)/180;
-	}
-	
-	window.onload = init;
+
+	  function handleClick(x, y) { //change this to right click?
+	  	var found = false;
+	  	if (!found) {
+	  		var colors = ["white", "DodgerBlue"];
+	  		var color = colors[Math.floor(Math.random() * colors.length)];
+	  		squares.push(new Square(x, y, color, size));
+	  	}
+	  	for (var i = 0; i < squares.length; i++) {
+	  		drawSquare(squares[i]);
+	  	}
+	  	/*
+	  		      function drawSquare(sq) {
+	  		          context.rect(200, 200, 10, 10);
+	  		          context.fillStyle = blue;
+	  		          context.fill()
+	  		          if (sq.x + sq.dx > canvas.width || sq.x + sq.dx < 0) {
+	  		              sq.dx = -sq.dx;
+	  		          }
+	  		          if (sq.y + sq.dy > canvas.height || sq.y + sq.dy < 0) {
+	  		              sq.dy = -sq.dy;
+	  		          }
+	  		          sq.x += sq.dx;
+	  		          sq.y += sq.dy;
+	  		      }
+	  	*/
+	  	function drawSquare(sq) {
+
+	  		context.rect(sq.x, sq.y, 10, 10);
+	  		context.fillStyle = sq.color;
+	  		//context.globalCompositeOperation = "lighter";
+	  		context.fill();
+
+	  		if (sq.x + sq.dx > canvas.width || sq.x + sq.dx < 0) {
+	  			sq.dx = -sq.dx;
+	  		}
+	  		if (sq.y + sq.dy > canvas.height || sq.y + sq.dy < 0) {
+	  			sq.dy = -sq.dy;
+	  		}
+	  		sq.x += sq.dx;
+	  		sq.y += sq.dy;
+	  	}
+
+	  	function resizeCanvas() {
+	  		canvas.width = window.innerWidth - 20;
+	  		canvas.height = window.innerHeight - 20;
+	  		fillBackgroundColor();
+	  		for (var i = 0; i < circles.length; i++) {
+	  			drawCircle(circles[i]);
+	  		}
+	  	}
+
+	  	function fillBackgroundColor() {
+	  		//var colors = ["white", "yellow", "blue", "red"];
+	  		//var bgColor = colors[Math.floor(Math.random() * colors.length)];
+	  		context.fillStyle = 'black';
+	  		context.fillRect(0, 0, canvas.width, canvas.height);
+	  	}
+
+	  	function degreesToRadians(degrees) {
+	  		return (degrees * Math.PI) / 180;
+	  	}
+
+	  	window.onload = init;
 </script>
 </head>
 <body>
