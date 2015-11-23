@@ -6,6 +6,7 @@
 	  var canvas;
 	  var context;
 	  var timer = setInterval(doFrame, 30);
+	  var time = 0;
 	  var circles = [];
 	  var squares = [];
 
@@ -47,7 +48,7 @@
 	  	context.beginPath();
 	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
 	  	context.fillStyle = circle.color;
-	  	//context.globalCompositeOperation = "lighter";
+	  	context.globalCompositeOperation = "lighter";
 	  	context.fill();
 	  }
 	  function updateCircle(circle) {
@@ -65,9 +66,10 @@
 	  function renderText() {
 		context.font = "150px Georgia";
 		context.strokeStyle = 'white';
-		context.strokeText("Amy Whicker", canvas.width/2 - 500, canvas.height/2);
-		context.font = "80px Georgia";
-		context.strokeText("DIG3480C", canvas.width/2 - 250, canvas.height/2 + 150);
+		context.strokeText("Amy Whicker", canvas.width/2 - 500 + Math.sin(time)*50, canvas.height/3);
+		context.font = "30px Georgia";
+		context.fillStyle = 'white';
+		context.fillText("DIG3480C", canvas.width/2 - 100 - Math.sin(time)*100, canvas.height/3 + 250);
 	  }
 	  function handleClick(x, y) {
 	  	var found = false;
@@ -82,7 +84,6 @@
 	  	function drawSquare(sq) {
 	  		context.rect(sq.x, sq.y, 10, 10);
 	  		context.fillStyle = sq.color;
-	  		//context.globalCompositeOperation = "lighter";
 	  		context.fill();
 	  	}
 		function updateSquare(sq) {
@@ -101,6 +102,7 @@
 			fillBackgroundColor();
 			updateShapes();
 			renderText();
+			time += 30.0/1000.0;
 		}
 		function updateShapes()
 		{
@@ -119,8 +121,6 @@
 	  	}
 
 	  	function fillBackgroundColor() {
-	  		//var colors = ["white", "yellow", "blue", "red"];
-	  		//var bgColor = colors[Math.floor(Math.random() * colors.length)];
 			resizeCanvas();
 	  		context.fillStyle = 'black';
 	  		context.fillRect(0, 0, canvas.width, canvas.height);
