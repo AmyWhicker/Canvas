@@ -5,7 +5,7 @@
 <script>
 	  var canvas;
 	  var context;
-	  var timer = setInterval(resizeCanvas, 30);
+	  var timer = setInterval(doFrame, 30);
 	  var circles = [];
 	  var squares = [];
 
@@ -58,7 +58,8 @@
 	  	context.fillStyle = circle.color;
 	  	context.globalCompositeOperation = "lighter";
 	  	context.fill();
-
+	  }
+	  function updateCircle(circle) {
 	  	if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0) {
 	  		circle.dx = -circle.dx;
 	  	}
@@ -67,40 +68,24 @@
 	  	}
 	  	circle.x += circle.dx;
 	  	circle.y += circle.dy;
-	  }
+      }
 
 	  function handleClick(x, y) { //change this to right click?
 	  	var found = false;
 	  	if (!found) {
 	  		var colors = ["white", "DodgerBlue"];
 	  		var color = colors[Math.floor(Math.random() * colors.length)];
-	  		squares.push(new Square(x, y, color, size));
+	  		squares.push(new Square(x, y, color, 100));
 	  	}
-	  	for (var i = 0; i < squares.length; i++) {
-	  		drawSquare(squares[i]);
-	  	}
-	  	/*
-	  		      function drawSquare(sq) {
-	  		          context.rect(200, 200, 10, 10);
-	  		          context.fillStyle = blue;
-	  		          context.fill()
-	  		          if (sq.x + sq.dx > canvas.width || sq.x + sq.dx < 0) {
-	  		              sq.dx = -sq.dx;
-	  		          }
-	  		          if (sq.y + sq.dy > canvas.height || sq.y + sq.dy < 0) {
-	  		              sq.dy = -sq.dy;
-	  		          }
-	  		          sq.x += sq.dx;
-	  		          sq.y += sq.dy;
-	  		      }
-	  	*/
+	   }
 	  	function drawSquare(sq) {
 
 	  		context.rect(sq.x, sq.y, 10, 10);
 	  		context.fillStyle = sq.color;
 	  		//context.globalCompositeOperation = "lighter";
 	  		context.fill();
-
+	  	}
+		function updateSquare(sq) {
 	  		if (sq.x + sq.dx > canvas.width || sq.x + sq.dx < 0) {
 	  			sq.dx = -sq.dx;
 	  		}
@@ -109,20 +94,32 @@
 	  		}
 	  		sq.x += sq.dx;
 	  		sq.y += sq.dy;
-	  	}
-
+		}
+        function doFrame()
+		{
+			fillBackgroundColor();
+			updateShapes();
+		}
+		function updateShapes()
+		{
+			for (var i = 0; i < circles.length; i++) {
+	  			drawCircle(circles[i]);
+				updateCircle(circles[i]);
+	  		}
+			for (var i = 0; i < squares.length; i++) {
+				drawSquare(squares[i]);
+				updateSquare(squares[i]);
+			}
+		}
 	  	function resizeCanvas() {
 	  		canvas.width = window.innerWidth - 20;
 	  		canvas.height = window.innerHeight - 20;
-	  		fillBackgroundColor();
-	  		for (var i = 0; i < circles.length; i++) {
-	  			drawCircle(circles[i]);
-	  		}
 	  	}
 
 	  	function fillBackgroundColor() {
 	  		//var colors = ["white", "yellow", "blue", "red"];
 	  		//var bgColor = colors[Math.floor(Math.random() * colors.length)];
+			resizeCanvas();
 	  		context.fillStyle = 'black';
 	  		context.fillRect(0, 0, canvas.width, canvas.height);
 	  	}
