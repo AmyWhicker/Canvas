@@ -9,8 +9,11 @@
 	  var circles = [];
 	  var squares = [];
 
-	  function Circle(x, y, color, radius) {
-	  	this.x = x;
+	  function Circle(x, y) {
+	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
+	  	var color = colors[Math.floor(Math.random()*colors.length)];
+	  	var radius = Math.floor(Math.random()*80);
+		this.x = x;
 	  	this.y = y;
 	  	this.color = color;
 	  	this.radius = radius;
@@ -18,11 +21,12 @@
 	  	this.dy = Math.floor(Math.random() * 4 - 2); //y velocity
 	  }
 
-	  function Square(x, y, color, size) {
-	  	this.x = x;
+	  function Square(x, y) {
+	  	var colors = ["white", "DodgerBlue", "red"];
+	  	var color = colors[Math.floor(Math.random() * colors.length)];
+		this.x = x;
 	  	this.y = y;
 	  	this.color = color;
-	  	this.size = size;
 	  	this.dx = Math.floor(Math.random() * 4 - 2);
 	  	this.dy = Math.floor(Math.random() * 4 - 2);
 	  }
@@ -34,23 +38,10 @@
 	  	//window.addEventListener('orientationchange', resizeCanvas, false);
 	  	//resizeCanvas();
 	  	canvas.onclick = function(event) {
-	  		handleClick(event.clientX, event.clientY); // add listener for right click
+	  		handleClick(event.clientX, event.clientY);
 	  	};
 	  }
-	  /*
-	  	  function handleClick(x, y) {
-	  	     var found = false;
-	  		 if (!found) {
-	  			var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
-	  			var color = colors[Math.floor(Math.random()*colors.length)];
-	  			var radius = Math.floor(Math.random()*80);
-	  			circles.push(new Circle(x, y, color, radius));
-	  		}
-	  		for (var i=0; i<circles.length; i++) {
-	  			drawCircle(circles[i]);
-	  		}
-	  	  }
-	  */
+
 	  function drawCircle(circle) {
 
 	  	context.beginPath();
@@ -70,16 +61,17 @@
 	  	circle.y += circle.dy;
       }
 
-	  function handleClick(x, y) { //change this to right click?
+	  function handleClick(x, y) {
 	  	var found = false;
 	  	if (!found) {
-	  		var colors = ["white", "DodgerBlue"];
-	  		var color = colors[Math.floor(Math.random() * colors.length)];
-	  		squares.push(new Square(x, y, color, 100));
+	  		if (Math.floor(Math.random()*10)%2 == 0) {
+				squares.push(new Square(x, y));
+			} else {
+				circles.push(new Circle(x, y));
+			}
 	  	}
 	   }
 	  	function drawSquare(sq) {
-
 	  		context.rect(sq.x, sq.y, 10, 10);
 	  		context.fillStyle = sq.color;
 	  		//context.globalCompositeOperation = "lighter";
