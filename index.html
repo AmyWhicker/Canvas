@@ -22,7 +22,7 @@
 	  }
 
 	  function Square(x, y) {
-	  	var colors = ["white", "DodgerBlue", "red"];
+	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
 	  	var color = colors[Math.floor(Math.random() * colors.length)];
 		this.x = x;
 	  	this.y = y;
@@ -47,20 +47,28 @@
 	  	context.beginPath();
 	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
 	  	context.fillStyle = circle.color;
-	  	context.globalCompositeOperation = "lighter";
+	  	//context.globalCompositeOperation = "lighter";
 	  	context.fill();
 	  }
 	  function updateCircle(circle) {
-	  	if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0) {
-	  		circle.dx = -circle.dx;
+	  	if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
+			circle.dx = -circle.dx*.8;
 	  	}
-	  	if (circle.y + circle.dy > canvas.height || circle.y + circle.dy < 0) {
-	  		circle.dy = -circle.dy;
+	  	if (circle.y + circle.radius > canvas.height) {
+	  		circle.y = canvas.height - circle.radius;
+			circle.dy = -circle.dy*.8;
 	  	}
 	  	circle.x += circle.dx;
 	  	circle.y += circle.dy;
+		circle.dy += 2;
       }
-
+	  function renderText() {
+		context.font = "150px Georgia";
+		context.strokeStyle = 'white';
+		context.strokeText("Amy Whicker", canvas.width/2 - 500, canvas.height/2);
+		context.font = "80px Georgia";
+		context.strokeText("DIG3480C", canvas.width/2 - 250, canvas.height/2 + 150);
+	  }
 	  function handleClick(x, y) {
 	  	var found = false;
 	  	if (!found) {
@@ -78,19 +86,21 @@
 	  		context.fill();
 	  	}
 		function updateSquare(sq) {
-	  		if (sq.x + sq.dx > canvas.width || sq.x + sq.dx < 0) {
-	  			sq.dx = -sq.dx;
+	  		if (sq.x + 10 > canvas.width || sq.x - 10 < 0) {
+	  			sq.dx = -sq.dx*.8;
 	  		}
-	  		if (sq.y + sq.dy > canvas.height || sq.y + sq.dy < 0) {
-	  			sq.dy = -sq.dy;
+	  		if (sq.y + 10 > canvas.height || sq.y - 10 < 0) {
+	  			sq.dy = -sq.dy*.8;
 	  		}
 	  		sq.x += sq.dx;
 	  		sq.y += sq.dy;
+			sq.dy -= 2;
 		}
         function doFrame()
 		{
 			fillBackgroundColor();
 			updateShapes();
+			renderText();
 		}
 		function updateShapes()
 		{
