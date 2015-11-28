@@ -6,10 +6,31 @@
 	  var canvas;
 	  var context;
 	  var timer = setInterval(doFrame, 30);
-	  var time = 0;
+	  var elapsedTime = 0;
 	  var circles = [];
 	  var squares = [];
-
+	  var hearts = [];
+	
+	function drawHeart(heart) {
+		context.translate(heart.x, heart.y);
+		context.beginPath();
+		context.moveTo(75,40);
+		context.bezierCurveTo(75,37,70,25,50,25);
+		context.bezierCurveTo(20,25,20,62.5,20,62.5);
+		context.bezierCurveTo(20,80,40,102,75,120);
+		context.bezierCurveTo(110,102,130,80,130,62.5);
+		context.bezierCurveTo(130,62.5,130,25,100,25);
+		context.bezierCurveTo(85,25,75,37,75,40);
+		context.fillStyle = 'red';
+		context.fill();
+		context.translate(-heart.x, -heart.y);
+	}
+	function Heart(x, y) {
+		this.x = x;
+	  	this.y = y;
+	  	this.dx = Math.floor(Math.random() * 10) - 2; //x velocity
+	  	this.dy = Math.floor(Math.random() * 10) - 2; //y velocity
+	  }
 	  function Circle(x, y) {
 	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
 	  	var color = colors[Math.floor(Math.random()*colors.length)];
@@ -23,7 +44,7 @@
 	  }
 
 	  function Square(x, y) {
-	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
+	  	var colors = ["Aquamarine", "DarkCyan", "DodgerBlue", "LightSeaGreen"];
 	  	var color = colors[Math.floor(Math.random() * colors.length)];
 		this.x = x;
 	  	this.y = y;
@@ -48,7 +69,7 @@
 	  	context.beginPath();
 	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
 	  	context.fillStyle = circle.color;
-	  	context.globalCompositeOperation = "lighter";
+	  	//context.globalCompositeOperation = "lighter";
 	  	context.fill();
 	  }
 	  function updateCircle(circle) {
@@ -64,23 +85,27 @@
 		circle.dy += 2;
       }
 	  function renderText() {
-		context.font = "150px Georgia";
+		context.font = "250px Georgia";
 		context.strokeStyle = 'white';
-		context.strokeText("Amy Whicker", canvas.width/2 - 500 + Math.sin(time)*50, canvas.height/3);
-		context.font = "30px Georgia";
-		context.fillStyle = 'white';
-		context.fillText("DIG3480C", canvas.width/2 - 100 - Math.sin(time)*100, canvas.height/3 + 250);
+		context.textAlign = "center";
+		context.strokeText("click", canvas.width/2 + Math.sin(elapsedTime)*50, canvas.height/2 - 50);
+		context.font = "40px Georgia";
+		context.textAlign = "center";     
+		context.strokeText("Amy Whicker DIG3480C", canvas.width/2 - 100 - Math.sin(elapsedTime)*100, canvas.height/2 + 150);
 	  }
 	  function handleClick(x, y) {
 	  	var found = false;
 	  	if (!found) {
-	  		if (Math.floor(Math.random()*10)%2 == 0) {
+			var r = Math.floor(Math.random()*10);
+	  		if (r%3 == 0) {
 				squares.push(new Square(x, y));
-			} else {
+			} else if (r%3==1) {
 				circles.push(new Circle(x, y));
-			}
-	  	}
-	   }
+			} else if (r%3 == 2) {
+				hearts.push(new Heart(x, y));
+			} else {};
+		}
+	  }
 	  	function drawSquare(sq) {
 	  		context.rect(sq.x, sq.y, 10, 10);
 	  		context.fillStyle = sq.color;
@@ -97,12 +122,22 @@
 	  		sq.y += sq.dy;
 			sq.dy -= 2;
 		}
+		function updateHeart(h) {
+	  		if (h.x + 150 > canvas.width || h.x < 0) { //right left
+	  			h.dx = -h.dx;
+	  		}
+	  		if (h.y + 150 > canvas.height || h.y < 0) { //down up
+	  			h.dy = -h.dy;
+	  		}
+	  		h.x += h.dx;
+	  		h.y += h.dy;
+		}
         function doFrame()
 		{
 			fillBackgroundColor();
 			updateShapes();
 			renderText();
-			time += 30.0/1000.0;
+			elapsedTime += 30.0/1000.0;
 		}
 		function updateShapes()
 		{
@@ -113,6 +148,10 @@
 			for (var i = 0; i < squares.length; i++) {
 				drawSquare(squares[i]);
 				updateSquare(squares[i]);
+			}
+			for (var i = 0; i < hearts.length; i++) {
+				drawHeart(hearts[i]);
+				updateHeart(hearts[i]);
 			}
 		}
 	  	function resizeCanvas() {
@@ -135,4 +174,4 @@
 </head>
 <body>
 <canvas id='canvas' width=500 height=500></canvas>
-</body>	  
+</body>
