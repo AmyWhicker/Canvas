@@ -11,6 +11,115 @@
 	  var squares = [];
 	  var hearts = [];
 	
+	function doFrame()
+		{
+			fillBackgroundColor();
+			updateShapes();
+			renderText();
+			elapsedTime += 30.0/1000.0;
+		}
+
+	function fillBackgroundColor() {
+			resizeCanvas();
+	  		context.fillStyle = 'black';
+	  		context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+
+	function resizeCanvas() {
+	  		canvas.width = window.innerWidth - 20;
+	  		canvas.height = window.innerHeight - 20;
+	}
+
+	function updateShapes()
+		{
+			for (var i = 0; i < circles.length; i++) {
+	  			drawCircle(circles[i]);
+				updateCircle(circles[i]);
+	  		}
+			for (var i = 0; i < squares.length; i++) {
+				drawSquare(squares[i]);
+				updateSquare(squares[i]);
+			}
+			for (var i = 0; i < hearts.length; i++) {
+				drawHeart(hearts[i]);
+				updateHeart(hearts[i]);
+			}
+	}
+
+	function renderText() {
+		context.font = "250px Georgia";
+		context.strokeStyle = 'white';
+		context.textAlign = "center";
+		context.strokeText("click", canvas.width/2 + Math.sin(elapsedTime)*50, canvas.height/2 - 50);
+		context.font = "40px Georgia";
+		context.textAlign = "center";     
+		context.strokeText("Amy Whicker DIG3480C", canvas.width/2 - 100 - Math.sin(elapsedTime)*100, canvas.height/2 + 150);
+	}
+
+	function Circle(x, y) {
+	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
+	  	var color = colors[Math.floor(Math.random()*colors.length)];
+	  	var radius = Math.floor(Math.random()*80);
+		this.x = x;
+	  	this.y = y;
+	  	this.color = color;
+	  	this.radius = radius;
+	  	this.dx = Math.floor(Math.random() * 4 - 2); //x velocity
+	  	this.dy = Math.floor(Math.random() * 4 - 2); //y velocity
+	}
+	function drawCircle(circle) {
+
+	  	context.beginPath();
+	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
+	  	context.fillStyle = circle.color;
+	  	//context.globalCompositeOperation = "lighter";
+	  	context.fill();
+	}
+	function updateCircle(circle) {
+	  	if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
+			circle.dx = -circle.dx*.8;
+	  	}
+	  	if (circle.y + circle.radius > canvas.height) {
+	  		circle.y = canvas.height - circle.radius;
+			circle.dy = -circle.dy*.8;
+	  	}
+	  	circle.x += circle.dx;
+	  	circle.y += circle.dy;
+		circle.dy += 2;
+    }
+
+	function Square(x, y) {
+	  	var colors = ["Aquamarine", "DarkCyan", "DodgerBlue", "LightSeaGreen"];
+	  	var color = colors[Math.floor(Math.random() * colors.length)];
+		this.x = x;
+	  	this.y = y;
+	  	this.color = color;
+	  	this.dx = Math.floor(Math.random() * 4 - 2);
+	  	this.dy = Math.floor(Math.random() * 4 - 2);
+	}
+	function drawSquare(sq) {
+	  	context.rect(sq.x, sq.y, 10, 10);
+	  	context.fillStyle = sq.color;
+	  	context.fill();
+	}
+	function updateSquare(sq) {
+	  		if (sq.x + 10 > canvas.width || sq.x - 10 < 0) {
+	  			sq.dx = -sq.dx*.8;
+	  		}
+	  		if (sq.y + 10 > canvas.height || sq.y - 10 < 0) {
+	  			sq.dy = -sq.dy*.8;
+	  		}
+	  		sq.x += sq.dx;
+	  		sq.y += sq.dy;
+			sq.dy -= 2;
+	}
+	
+	function Heart(x, y) {
+		this.x = x;
+	  	this.y = y;
+	  	this.dx = Math.floor(Math.random() * 10) - 2; //x velocity
+	  	this.dy = Math.floor(Math.random() * 10) - 2; //y velocity
+	}
 	function drawHeart(heart) {
 		context.translate(heart.x, heart.y);
 		context.beginPath();
@@ -25,104 +134,7 @@
 		context.fill();
 		context.translate(-heart.x, -heart.y);
 	}
-	function Heart(x, y) {
-		this.x = x;
-	  	this.y = y;
-	  	this.dx = Math.floor(Math.random() * 10) - 2; //x velocity
-	  	this.dy = Math.floor(Math.random() * 10) - 2; //y velocity
-	  }
-	  function Circle(x, y) {
-	  	var colors = ["violet", "indigo", "darkmagenta", "blueviolet", "purple"];
-	  	var color = colors[Math.floor(Math.random()*colors.length)];
-	  	var radius = Math.floor(Math.random()*80);
-		this.x = x;
-	  	this.y = y;
-	  	this.color = color;
-	  	this.radius = radius;
-	  	this.dx = Math.floor(Math.random() * 4 - 2); //x velocity
-	  	this.dy = Math.floor(Math.random() * 4 - 2); //y velocity
-	  }
-
-	  function Square(x, y) {
-	  	var colors = ["Aquamarine", "DarkCyan", "DodgerBlue", "LightSeaGreen"];
-	  	var color = colors[Math.floor(Math.random() * colors.length)];
-		this.x = x;
-	  	this.y = y;
-	  	this.color = color;
-	  	this.dx = Math.floor(Math.random() * 4 - 2);
-	  	this.dy = Math.floor(Math.random() * 4 - 2);
-	  }
-
-	  function init() {
-	  	canvas = document.getElementById('canvas');
-	  	context = canvas.getContext("2d");
-	  	//window.addEventListener('resize', resizeCanvas, false);
-	  	//window.addEventListener('orientationchange', resizeCanvas, false);
-	  	//resizeCanvas();
-	  	canvas.onclick = function(event) {
-	  		handleClick(event.clientX, event.clientY);
-	  	};
-	  }
-
-	  function drawCircle(circle) {
-
-	  	context.beginPath();
-	  	context.arc(circle.x, circle.y, circle.radius, 0, degreesToRadians(360), true);
-	  	context.fillStyle = circle.color;
-	  	//context.globalCompositeOperation = "lighter";
-	  	context.fill();
-	  }
-	  function updateCircle(circle) {
-	  	if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
-			circle.dx = -circle.dx*.8;
-	  	}
-	  	if (circle.y + circle.radius > canvas.height) {
-	  		circle.y = canvas.height - circle.radius;
-			circle.dy = -circle.dy*.8;
-	  	}
-	  	circle.x += circle.dx;
-	  	circle.y += circle.dy;
-		circle.dy += 2;
-      }
-	  function renderText() {
-		context.font = "250px Georgia";
-		context.strokeStyle = 'white';
-		context.textAlign = "center";
-		context.strokeText("click", canvas.width/2 + Math.sin(elapsedTime)*50, canvas.height/2 - 50);
-		context.font = "40px Georgia";
-		context.textAlign = "center";     
-		context.strokeText("Amy Whicker DIG3480C", canvas.width/2 - 100 - Math.sin(elapsedTime)*100, canvas.height/2 + 150);
-	  }
-	  function handleClick(x, y) {
-	  	var found = false;
-	  	if (!found) {
-			var r = Math.floor(Math.random()*10);
-	  		if (r%3 == 0) {
-				squares.push(new Square(x, y));
-			} else if (r%3==1) {
-				circles.push(new Circle(x, y));
-			} else if (r%3 == 2) {
-				hearts.push(new Heart(x, y));
-			} else {};
-		}
-	  }
-	  	function drawSquare(sq) {
-	  		context.rect(sq.x, sq.y, 10, 10);
-	  		context.fillStyle = sq.color;
-	  		context.fill();
-	  	}
-		function updateSquare(sq) {
-	  		if (sq.x + 10 > canvas.width || sq.x - 10 < 0) {
-	  			sq.dx = -sq.dx*.8;
-	  		}
-	  		if (sq.y + 10 > canvas.height || sq.y - 10 < 0) {
-	  			sq.dy = -sq.dy*.8;
-	  		}
-	  		sq.x += sq.dx;
-	  		sq.y += sq.dy;
-			sq.dy -= 2;
-		}
-		function updateHeart(h) {
+	function updateHeart(h) {
 	  		if (h.x + 150 > canvas.width || h.x < 0) { //right left
 	  			h.dx = -h.dx;
 	  		}
@@ -131,45 +143,36 @@
 	  		}
 	  		h.x += h.dx;
 	  		h.y += h.dy;
-		}
-        function doFrame()
-		{
-			fillBackgroundColor();
-			updateShapes();
-			renderText();
-			elapsedTime += 30.0/1000.0;
-		}
-		function updateShapes()
-		{
-			for (var i = 0; i < circles.length; i++) {
-	  			drawCircle(circles[i]);
-				updateCircle(circles[i]);
-	  		}
-			for (var i = 0; i < squares.length; i++) {
-				drawSquare(squares[i]);
-				updateSquare(squares[i]);
-			}
-			for (var i = 0; i < hearts.length; i++) {
-				drawHeart(hearts[i]);
-				updateHeart(hearts[i]);
-			}
-		}
-	  	function resizeCanvas() {
-	  		canvas.width = window.innerWidth - 20;
-	  		canvas.height = window.innerHeight - 20;
-	  	}
+	}
 
-	  	function fillBackgroundColor() {
-			resizeCanvas();
-	  		context.fillStyle = 'black';
-	  		context.fillRect(0, 0, canvas.width, canvas.height);
-	  	}
-
-	  	function degreesToRadians(degrees) {
+	function degreesToRadians(degrees) {
 	  		return (degrees * Math.PI) / 180;
-	  	}
+	}
 
-	  	window.onload = init;
+	function handleClick(x, y) {
+	  var found = false;
+	  if (!found) {
+		var r = Math.floor(Math.random()*10);
+	  	if (r%3 == 0) {
+			squares.push(new Square(x, y));
+		} else if (r%3==1) {
+			circles.push(new Circle(x, y));
+		} else if (r%3 == 2) {
+			hearts.push(new Heart(x, y));
+		} else {};
+	  }
+	}
+	function init() {
+	  	canvas = document.getElementById('canvas');
+	  	context = canvas.getContext("2d");
+	  	//window.addEventListener('resize', resizeCanvas, false);
+	  	//window.addEventListener('orientationchange', resizeCanvas, false);
+	  	//resizeCanvas();
+	  	canvas.onclick = function(event) {
+	  		handleClick(event.clientX, event.clientY);
+	  	};
+	}
+	window.onload = init;
 </script>
 </head>
 <body>
